@@ -33,8 +33,8 @@ class Net(nn.Module):
 	def __init__(self):
 		super(Net, self).__init__()
 
-		self.fc1 = nn.Linear(28*28, 256)
-		self.fc2 = nn.Linear(256, 64)
+		self.fc1 = nn.Linear(28*28, 128)
+		self.fc2 = nn.Linear(128, 64)
 		self.fc3 = nn.Linear(64, 10)
 
 	def forward(self, x):
@@ -60,8 +60,8 @@ for epoch in range(3):
 		optimizer.step()
 		train_loss.append(loss.item())
 
-		# if batch_idx%10 ==0:
-		# 	print(epoch, batch_idx, loss.item())
+		if batch_idx%10 ==0:
+			print(epoch, batch_idx, loss.item())
 
 # plot_curve(train_loss)
 total_correct = 0
