@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+
 # 基本类型检验
 # a = torch.randn(2, 3)
 # print(a)
@@ -165,10 +166,171 @@ import numpy as np
 # t = torch.arange(24).reshape(2, 3, 4)
 # print(t)
 # print(t.flatten())
+
 # 故transpose后需要先contiguous()[相当于拷贝一个新的连续空间给交换后的张量]再view()
 # # permute
 # a = torch.rand(4,3,28,32)
 # print(a.shape)
 # b = a.permute(0,2,3,1)
 # print(b.shape)
+
+# # broadcast
+# a = torch.rand(4,2,8)
+# b = torch.tensor([5,0,0,0,0,0,0,0])
+# # b = b.unsqueeze(0)
+# # b = b.repeat(4,1)
+# print(a)
+# print(a+b)
+
+# 合并拆分
+# cat
+# a = torch.rand(4, 32, 8)
+# b = torch.rand(4, 32, 8)
+# print(torch.cat([a, b], dim=0).shape)
+# # stack
+# print(torch.stack([a,b],dim=0).shape)
+
+# # split 指定长度
+# c = torch.stack([a, b],dim=0)
+# print(c.shape)
+# # 均分
+# aa,bb = c.split(1,dim=0)
+# print(aa.shape)
+# print(bb.shape)
+# d = torch.cat([c,c],dim=0)
+# print(d.shape)
+# # 指定长度数组
+# ac,bc = d.split([1,3],dim=0)
+# print(ac.shape)
+# print(bc.shape)
+#
+# # chunk 指定平均拆分数量
+# a2,b2 = c.chunk(2,dim=0)
+# print(a2.shape)
+# print(b2.shape)
+
+# a = torch.tensor([[3.,3.],
+#                   [3.,3.]])
+#
+# b = torch.ones(2,2)
+# print(torch.mul(a,b))
+# print(torch.mm(a, b))
+# print(torch.matmul(a,b))
+# print(a@b)
+
+# # 高维矩阵相乘
+# a = torch.rand(4, 3, 28, 64)
+# b = torch.rand(4, 3, 64, 32)
+# print(torch.matmul(a, b).shape)
+# c = torch.rand(4, 1, 64, 32)
+# print(torch.matmul(a, c).shape)
+
+# # exp log
+# a = torch.exp(torch.ones(2,2)*2)
+# print(a)
+# b = torch.log2(a)
+# print(b)
+
+# a = torch.tensor(3.14)
+# print(a.floor())
+# print(a.ceil())
+# print(a.trunc())
+# print(a.frac())
+# print(a.round())
+# a = a+0.5
+# print(a.round())
+
+# # clamp
+# grad = torch.rand(2,3)*15
+# print(grad)
+# print(grad.clamp(0,10))
+# print(grad.clamp(10))
+
+# # norm-p
+# a = torch.full([8],1.)
+# b = a.view(2,4)
+# c = torch.full([3,2,2],1.)
+# # print(a.norm(1))
+# # print(b.norm(1))
+# # print(c.norm(1))
+# # print(a.norm(2))
+# # print(b.norm(1,dim=1))
+# # print(b.norm(2,dim=1))
+# print(c)
+# print(c.norm(1,dim=0))
+
+# a = torch.randint(4,10,[4,10])
+# print(a)
+# print(a.max(dim=1,keepdim=True))
+
+# where和gather为gpu加速
+# # where
+# cond = torch.randn(3, 4)
+# a = torch.ones(3, 4)
+# b = torch.zeros(3, 4)
+# print(cond)
+# print(torch.where(cond > 0.5, a, b))
+
+# # gather
+# prob = torch.randn(4, 10)
+# idx = prob.topk(dim=1, k=3)[1]
+#
+# label = torch.arange(10) + 100
+#
+# print(torch.gather(label.expand(4, 10),dim=1,index=idx))
+
+from torch.nn import functional as F
+# 激活函数
+# data = torch.linspace(-100,100,10)
+# print(data)
+# print(F.sigmoid(data))
+# print(F.tanh(data))
+# print(F.relu(data))
+
+# # autograd.grad 和backward
+# x = torch.ones(2)
+# w = torch.tensor([1.5, 2],requires_grad=True)
+# b = torch.tensor([0.5],requires_grad=True)
+# mse = F.mse_loss(torch.ones(1),torch.matmul(x,w.t())+b)
+# print(torch.autograd.grad(mse, [w,b]))
+# # mse.backward()
+# # print(w.grad)
+# # print(b.grad)
+
+# # F.softmax
+# a = torch.randn(3)
+# a.requires_grad_()
+#
+# p = F.softmax(a,dim=0)
+# print(torch.autograd.grad(p[0],a,retain_graph=True))
+# print(torch.autograd.grad(p[1],a,retain_graph=True))
+# print(torch.autograd.grad(p[2],a,retain_graph=True))
+
+# 单层感知机模型
+
+# x = torch.randn(1, 10)
+# w = torch.randn(1, 10, requires_grad=True)
+#
+# n = 0
+# while n < 100:
+# 	o = torch.sigmoid(x @ w.t())
+# 	loss = F.mse_loss(torch.ones(o.shape),o)
+# 	print(loss.data)
+# 	loss.backward(retain_graph=True)
+# 	w.data -= 0.01*w.grad.data
+# 	if loss.data < 0.01:
+# 		break
+#
+# print(w.grad)
+
+# x = torch.randn(1, 10)
+# w = torch.randn(2, 10,requires_grad=True)
+# o = torch.sigmoid(x@w.t())
+#
+# loss = F.mse_loss(torch.ones(o.shape),o)
+# loss.backward()
+# print(w.grad)
+
+
+
 
