@@ -61,6 +61,9 @@ for iter in range(60000):
 	loss = criterion(output, y)
 	optimizer.zero_grad()
 	loss.backward()
+	# 防止梯度爆炸
+	for p in model.parameters():
+		torch.nn.utils.clip_grad_norm_(p, 10)
 	optimizer.step()
 
 	if iter % 100 == 0:
